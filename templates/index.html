@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Email Threat Detector</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="container">
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <header class="header">
+
+            <div class="logo">
+                🛡️
+            </div>
+
+            <h1>
+                AI Email Threat Detector
+            </h1>
+
+            <p class="subtitle">
+                Intelligent email security analysis powered by AI
+            </p>
+
+        </header>
+
+
+        <!-- =========================
+             PRIVACY
+        ========================== -->
+
+        <div class="privacy">
+
+            <div class="privacy-icon">
+                🔐
+            </div>
+
+            <div class="privacy-content">
+
+                <h3>
+                    Privacy First — Analyze, Don't Store
+                </h3>
+
+                <p>
+                    Your email is analyzed only to identify
+                    potential security threats. This demo does
+                    not intentionally save analyzed email content
+                    to a database or file.
+                </p>
+
+                <div class="privacy-points">
+
+                    <span>
+                        ✓ No Gmail password required
+                    </span>
+
+                    <span>
+                        ✓ No inbox access
+                    </span>
+
+                    <span>
+                        ✓ No intentional email storage
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             EMAIL FORM
+        ========================== -->
+
+        <form action="/analyze"
+              method="POST"
+              enctype="multipart/form-data"
+              class="email-form">
+
+            <div class="section-title">
+
+                <span class="section-icon">
+                    🔍
+                </span>
+
+                <div>
+
+                    <h2>
+                        Analyze an Email
+                    </h2>
+
+                    <p>
+                        Paste the suspicious email or upload
+                        an .eml file
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <label
+                class="input-label"
+                for="email">
+
+                Email Content
+
+            </label>
+
+
+            <textarea
+                id="email"
+                name="email"
+                rows="10"
+                placeholder="Paste suspicious email content here..."
+            ></textarea>
+
+
+            <div class="or-divider">
+
+                <span>
+                    OR
+                </span>
+
+            </div>
+
+
+            <!-- FILE UPLOAD -->
+
+            <div class="file-upload">
+
+                <div class="upload-icon">
+                    📎
+                </div>
+
+                <h3>
+                    Upload Email File
+                </h3>
+
+                <p>
+                    Upload an email file in
+                    <strong>.eml</strong> format
+                </p>
+
+                <label
+                    for="email_file"
+                    class="upload-button">
+
+                    Choose .eml File
+
+                </label>
+
+                <input
+                    type="file"
+                    id="email_file"
+                    name="email_file"
+                    accept=".eml"
+                >
+
+                <p
+                    class="file-selected"
+                    id="file-selected">
+
+                    No file selected
+
+                </p>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="analyze-button">
+
+                🔍 Analyze Email
+
+            </button>
+
+        </form>
+
+
+        <!-- =========================
+             ERROR
+        ========================== -->
+
+        {% if error %}
+
+        <div class="error-message">
+
+            <span>
+                ⚠️
+            </span>
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =========================
+             RESULT
+        ========================== -->
+
+        {% if result %}
+
+        <div class="result">
+
+            <!-- RESULT HEADER -->
+
+            <div class="result-header">
+
+                <div>
+
+                    <p class="result-label">
+                        ANALYSIS COMPLETE
+                    </p>
+
+                    <h2>
+                        🛡️ Security Analysis Result
+                    </h2>
+
+                </div>
+
+
+                <div class="result-status
+                    {% if result == 'High Risk' %}
+                        status-high
+                    {% elif result == 'Medium Risk' %}
+                        status-medium
+                    {% else %}
+                        status-low
+                    {% endif %}
+                ">
+
+                    {% if result == 'High Risk' %}
+
+                        🔴 High Risk
+
+                    {% elif result == 'Medium Risk' %}
+
+                        🟠 Medium Risk
+
+                    {% else %}
+
+                        🟢 Low Risk
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 RISK SCORE
+            ========================== -->
+
+            <div class="score-card">
+
+                <div class="score-title">
+
+                    <span>
+                        📊
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Security Risk Score
+                        </h3>
+
+                        <p>
+                            Overall risk based on multiple
+                            security checks
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="risk-score-display">
+
+                    <div class="risk-circle
+                        {% if risk_score >= 60 %}
+                            circle-high
+                        {% elif risk_score >= 30 %}
+                            circle-medium
+                        {% else %}
+                            circle-low
+                        {% endif %}
+                    ">
+
+                        <div class="risk-circle-inner">
+
+                            <span class="score-number">
+                                {{ risk_score }}
+                            </span>
+
+                            <span class="score-total">
+                                /100
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-info">
+
+                        <h3>
+
+                            {% if risk_score >= 60 %}
+
+                                High Risk Detected
+
+                            {% elif risk_score >= 30 %}
+
+                                Medium Risk Detected
+
+                            {% else %}
+
+                                Low Risk Detected
+
+                            {% endif %}
+
+                        </h3>
+
+
+                        <p>
+
+                            {% if risk_score >= 60 %}
+
+                                Multiple suspicious indicators
+                                require immediate attention.
+
+                            {% elif risk_score >= 30 %}
+
+                                Some suspicious indicators
+                                require further verification.
+
+                            {% else %}
+
+                                No major suspicious indicators
+                                were detected.
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 ANALYSIS SUMMARY
+            ========================== -->
+
+            <div class="analysis-breakdown">
+
+                <div class="section-heading">
+
+                    <span>
+                        🔬
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Analysis Summary
+                        </h3>
+
+                        <p>
+                            Security checks performed on
+                            this email
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analysis-grid">
+
+
+                    <!-- AI -->
+
+                    <div class="analysis-card">
+
+                        <div class="analysis-icon">
+                            🤖
+                        </div>
+
+                        <div class="analysis-content">
+
+                            <h4>
+                                AI / ML Analysis
+                            </h4>
+
+                            {% if ml_detected %}
+
+                            <span class="status suspicious">
+                                ⚠️ Suspicious
+                            </span>
+
+                            {% else %}
+
+                            <span class="status safe">
+                                ✅ No Threat
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- KEYWORD -->
+
+                    <div class="analysis-card">
+
+                        <div class="analysis-icon">
+                            🔑
+                        </div>
+
+                        <div class="analysis-content">
+
+                            <h4>
+                                Keyword Analysis
+                            </h4>
+
+                            {% if keyword_detected %}
+
+                            <span class="status suspicious">
+                                ⚠️ Suspicious
+                            </span>
+
+                            {% else %}
+
+                            <span class="status safe">
+                                ✅ No Threat
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- URL -->
+
+                    <div class="analysis-card">
+
+                        <div class="analysis-icon">
+                            🔗
+                        </div>
+
+                        <div class="analysis-content">
+
+                            <h4>
+                                URL Analysis
+                            </h4>
+
+                            {% if url_detected %}
+
+                            <span class="status suspicious">
+                                ⚠️ Suspicious
+                            </span>
+
+                            {% else %}
+
+                            <span class="status safe">
+                                ✅ No Threat
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SENDER -->
+
+                    <div class="analysis-card">
+
+                        <div class="analysis-icon">
+                            📧
+                        </div>
+
+                        <div class="analysis-content">
+
+                            <h4>
+                                Sender Analysis
+                            </h4>
+
+                            {% if sender_detected %}
+
+                            <span class="status suspicious">
+                                ⚠️ Suspicious
+                            </span>
+
+                            {% else %}
+
+                            <span class="status safe">
+                                ✅ No Threat
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 DETECTED THREATS
+            ========================== -->
+
+            <div class="threat-section">
+
+                <div class="section-heading">
+
+                    <span>
+                        🚨
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Detected Threats
+                        </h3>
+
+                        <p>
+                            Security indicators identified
+                            during analysis
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if threats %}
+
+                <div class="threat-list">
+
+                    {% for threat in threats %}
+
+                    <div class="threat-item">
+
+                        <div class="threat-icon">
+                            ⚠️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Suspicious Indicator
+                            </strong>
+
+                            <p>
+                                {{ threat }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="safe-message">
+
+                    <span>
+                        ✅
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            No Suspicious Threats Detected
+                        </strong>
+
+                        <p>
+                            No major suspicious indicators
+                            were identified by the current
+                            analysis.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 WHY RISKY
+            ========================== -->
+
+            <div class="explanation">
+
+                <div class="section-heading">
+
+                    <span>
+                        🔎
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Why This Email Is Risky?
+                        </h3>
+
+                        <p>
+                            Explanation based on the detected
+                            security indicators
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="risk-explanation">
+
+                    {% if risk_score >= 60 %}
+
+                    <h4>
+                        🚨 High Risk Email
+                    </h4>
+
+                    <p>
+                        This email contains multiple
+                        suspicious indicators. Avoid
+                        clicking links or sharing passwords,
+                        OTPs, financial information, or
+                        other sensitive details.
+                    </p>
+
+
+                    {% elif risk_score >= 30 %}
+
+                    <h4>
+                        ⚠️ Medium Risk Email
+                    </h4>
+
+                    <p>
+                        This email contains some suspicious
+                        indicators. Verify the sender and
+                        email details carefully before
+                        taking any action.
+                    </p>
+
+
+                    {% else %}
+
+                    <h4>
+                        ✅ Low Risk Email
+                    </h4>
+
+                    <p>
+                        No major suspicious indicators
+                        were detected by the current
+                        analysis. However, always verify
+                        unexpected requests before
+                        responding.
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if threats %}
+
+                <h4 class="indicator-title">
+                    Detected Indicators
+                </h4>
+
+                <ul class="explanation-list">
+
+                    {% for threat in threats %}
+
+                    <li>
+
+                        <span>
+                            ⚠️
+                        </span>
+
+                        <span>
+                            {{ threat }}
+                        </span>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+
+                {% else %}
+
+                <div class="no-threat-text">
+
+                    ✅ No major suspicious indicators
+                    were detected in this email.
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 RECOMMENDATION
+            ========================== -->
+
+            <div class="recommendation">
+
+                <div class="recommendation-icon">
+                    💡
+                </div>
+
+                <div>
+
+                    <h3>
+                        Security Recommendation
+                    </h3>
+
+                    <p>
+                        {{ recommendation }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 ANALYZE AGAIN
+            ========================== -->
+
+            <div class="another-email">
+
+                <a
+                    href="/"
+                    class="another-button">
+
+                    🔄 Analyze Another Email
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FILE NAME SCRIPT
+========================= -->
+
+<script>
+
+const fileInput =
+    document.getElementById("email_file");
+
+const fileSelected =
+    document.getElementById("file-selected");
+
+
+if (fileInput) {
+
+    fileInput.addEventListener(
+        "change",
+        function () {
+
+            if (this.files.length > 0) {
+
+                fileSelected.textContent =
+                    "Selected: " +
+                    this.files[0].name;
+
+            } else {
+
+                fileSelected.textContent =
+                    "No file selected";
+
+            }
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>
