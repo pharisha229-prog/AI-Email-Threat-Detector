@@ -2,20 +2,20 @@
 
 An AI-powered web application that analyzes emails and identifies potential security threats such as phishing, suspicious URLs, risky sender information, and suspicious keywords.
 
-## 🚀 Features
+##  Features
 
-- 🤖 Machine Learning based email threat detection
-- 🔍 Suspicious keyword detection
-- 🌐 URL security analysis
-- 📧 Sender and Reply-To analysis
-- 📁 `.eml` file upload support
-- 📊 Risk score from 0–100
-- ⚠️ Low, Medium, and High Risk classification
-- 💡 Explanation of detected threats
-- 🛡️ Security recommendations
-- 🔒 Privacy-first design
+-  Machine Learning based email threat detection
+-  Suspicious keyword detection
+-  URL security analysis
+-  Sender and Reply-To analysis
+- `.eml` file upload support
+-  Risk score from 0–100
+-  Low, Medium, and High Risk classification
+-  Explanation of detected threats
+-  Security recommendations
+-  Privacy-first design
 
-## 🧠 How It Works
+##  How It Works
 
 The application analyzes an email using multiple detection methods:
 
@@ -49,7 +49,7 @@ The application analyzes an email using multiple detection methods:
    - Combines the different analysis results
    - Produces a risk score between 0 and 100
 
-## 📊 Risk Levels
+##  Risk Levels
 
 | Risk Score | Result |
 |------------|--------|
@@ -57,7 +57,7 @@ The application analyzes an email using multiple detection methods:
 | 30–59 | Medium Risk |
 | 60–100 | High Risk |
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 - Python
 - Flask
@@ -68,7 +68,7 @@ The application analyzes an email using multiple detection methods:
 - Git
 - GitHub
 
-## 📁 Project Structure
+##  Project Structure
 
 ```text
 AI-Email-Threat-Detector/
